@@ -1,0 +1,55 @@
+{
+  "name": "gulptraum-typescript",
+  "publishConfig": {
+    "registry": "https://www.npmjs.com"
+  },
+  "version": "1.0.0",
+  "description": "TypeScript plugin for gulptraum.",
+  "main": "dist/commonjs/index.js",
+  "typings": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gulptraum.git"
+  },
+  "keywords": [
+    "javascript",
+    "typescript",
+    "build",
+    "gulp",
+    "generator",
+    "tasks",
+    "pipeline",
+    "system",
+    "cli"
+  ],
+  "author": {
+    "name": "5Minds IT-Solutions GmbH & Co. KG",
+    "email": "info@5minds.de",
+    "url": "https://5minds.de"
+  },
+  "maintainers": [
+    "Sebastian Meier <sebastian.meier@5minds.de>"
+  ],
+  "contributors": [
+    "Martin Möllenbeck <martin.moellenbeck@5minds.de>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/5minds/gulptraum/issues"
+  },
+  "homepage": "https://github.com/5minds/gulptraum#readme",
+  "devDependencies": {
+    "eslint": "^3.4.0",
+    "eslint-config-5minds": "0.0.4",
+    "eslint-plugin-import": "^1.14.0",
+    "gulptraum": "^2.0.0",
+    "gulptraum-typescript": "^1.0.0",
+    "new_gulptraum": "^1.0.0",
+    "tsconfig": "^6.0.0",
+    "tslint-config-5minds": "^1.0.2"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "gulp": "^3.9.1"
+  }
+}
