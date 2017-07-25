@@ -4,7 +4,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(require("./config"));
-const index_1 = require("./tasks/index");
+var index_1 = require("./tasks/index");
 function initializePlugin(gulp, config, gulptraum) {
     index_1.initializePluginTasks(gulp, config, gulptraum);
 }

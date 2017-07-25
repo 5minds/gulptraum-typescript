@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const build_1 = require("./build");
-const clean_1 = require("./clean");
-const doc_1 = require("./doc");
-const lint_1 = require("./lint");
-const setup_dev_1 = require("./setup_dev");
-const test_1 = require("./test");
-const watch_1 = require("./watch");
+var build_1 = require("./build");
+var clean_1 = require("./clean");
+var doc_1 = require("./doc");
+var lint_1 = require("./lint");
+var setup_dev_1 = require("./setup_dev");
+var test_1 = require("./test");
+var watch_1 = require("./watch");
 function initializePluginTasks(gulp, config, gulptraum) {
     build_1.generate(gulp, config, gulptraum);
     clean_1.generate(gulp, config, gulptraum);

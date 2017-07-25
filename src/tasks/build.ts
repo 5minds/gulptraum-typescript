@@ -40,7 +40,7 @@ export function generate(gulp, config, gulptraum): void {
       getTypescriptOptions({
         removeComments: false,
         target: 'es2015',
-        module: 'es2015',
+        module: 'esnext',
       }));
     const tsResult = srcForTypeScript()
       .pipe(tsProject(ts.reporter.fullReporter(true)));

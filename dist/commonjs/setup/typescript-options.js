@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const tsconfig = require("./tsconfig");
-const typescript = require("typescript");
+var tsconfig = require("./tsconfig");
+var typescript = require("typescript");
 function initializeTypeScriptOptions(buildStepConfig) {
-    const resolvedTsConfig = tsconfig.getTypeScriptConfig(buildStepConfig);
-    return (override) => {
+    var resolvedTsConfig = tsconfig.getTypeScriptConfig(buildStepConfig);
+    return function (override) {
         return Object.assign(resolvedTsConfig.compilerOptions, {
             target: override && override.target || 'es5',
             typescript: typescript,

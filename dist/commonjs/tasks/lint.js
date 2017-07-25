@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const path = require("path");
-const tslint = require("gulp-tslint");
-const tslintDefaultConfiguration = path.resolve(__filename, '../../setup/tslint.json');
+var path = require("path");
+var tslint = require("gulp-tslint");
+var tslintDefaultConfiguration = path.resolve(__filename, '../../setup/tslint.json');
 function generate(gulp, config, gulptraum) {
-    const sourceFolderPath = path.resolve(config.paths.root, config.paths.source);
+    var sourceFolderPath = path.resolve(config.paths.root, config.paths.source);
     gulptraum.task('lint-typescript', {
         help: 'Performs a style check on your TypeScript source code using TSLint'
     }, function lintTypescript() {
-        let tslintConfiguration = tslintDefaultConfiguration;
+        var tslintConfiguration = tslintDefaultConfiguration;
         if (config.paths.tslintConfig) {
             tslintConfiguration = path.resolve(config.paths.root, config.paths.tslintConfig);
         }

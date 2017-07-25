@@ -9,7 +9,7 @@ function replaceFileIfExists(sourcePath, targetPath) {
     return;
   }
 
-  const copyOptions = {
+  const copyOptions: any = {
     clobber: true, // overwrites file
   };
 
