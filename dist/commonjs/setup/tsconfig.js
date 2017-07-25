@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function getTypeScriptConfig(buildStepConfig) {
-    var config = {
+    const config = {
         compilerOptions: {
             target: 'es2015',
             module: 'es2015',

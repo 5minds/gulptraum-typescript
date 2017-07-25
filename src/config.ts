@@ -16,7 +16,7 @@ export const getDefaultConfig: IConfigurationHook
   paths.typings = `${path.resolve(buildSystemConfig.paths.root, 'typings/')}/**/*.d.ts`;
   paths.tslintConfig = tslintConfigExists ? tslintConfigPath : undefined;
 
-  let config: ITypeScriptPluginConfiguration = Object.assign({}, buildSystemConfig);
+  const config: ITypeScriptPluginConfiguration = Object.assign({}, buildSystemConfig);
 
   config.pluginName = 'typescript';
   config.paths = paths;

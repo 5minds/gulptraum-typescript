@@ -1,26 +1,26 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var ts = require("gulp-typescript");
-var sourcemaps = require("gulp-sourcemaps");
-var typescript_options_1 = require("./../setup/typescript-options");
+const ts = require("gulp-typescript");
+const sourcemaps = require("gulp-sourcemaps");
+const typescript_options_1 = require("./../setup/typescript-options");
 function generate(gulp, config, gulptraum) {
-    var jsName = config.packageName + ".ts";
-    var getTypescriptOptions = typescript_options_1.initializeTypeScriptOptions(config);
+    const jsName = `${config.packageName}.ts`;
+    const getTypescriptOptions = typescript_options_1.initializeTypeScriptOptions(config);
     function srcForTypeScript() {
-        var allSourceFiles = [config.paths.source, config.paths.typings];
+        const allSourceFiles = [config.paths.source, config.paths.typings];
         return gulp
             .src(allSourceFiles);
     }
-    config.compileToModules.forEach(function (moduleType) {
-        gulptraum.task("build-typescript-" + moduleType, {
-            help: "Builds the TypeScript source code into a " + moduleType + " module",
-        }, function () {
-            var options = getTypescriptOptions({
+    config.compileToModules.forEach((moduleType) => {
+        gulptraum.task(`build-typescript-${moduleType}`, {
+            help: `Builds the TypeScript source code into a ${moduleType} module`,
+        }, () => {
+            const options = getTypescriptOptions({
                 module: moduleType,
                 target: (config && config.compilerOptions && config.compilerOptions.target) ? config.compilerOptions.target : 'es5'
             });
-            var tsProject = ts.createProject(options);
-            var tsResult = srcForTypeScript()
+            const tsProject = ts.createProject(options);
+            const tsResult = srcForTypeScript()
                 .pipe(sourcemaps.init())
                 .pipe(tsProject(ts.reporter.fullReporter(true)));
             return tsResult.js
@@ -30,26 +30,26 @@ function generate(gulp, config, gulptraum) {
     });
     gulptraum.task('build-typescript-dts', {
         help: 'Generates the type definitions (.d.ts) file from your TypeScript source code',
-    }, function () {
-        var tsProject = ts.createProject(getTypescriptOptions({
+    }, () => {
+        const tsProject = ts.createProject(getTypescriptOptions({
             removeComments: false,
             target: 'es2015',
             module: 'es2015',
         }));
-        var tsResult = srcForTypeScript()
+        const tsResult = srcForTypeScript()
             .pipe(tsProject(ts.reporter.fullReporter(true)));
         return tsResult.dts
             .pipe(gulp.dest(config.paths.output));
     });
     gulptraum.task('build-typescript', {
         help: 'Builds your TypeScript source code and generates the type definitions',
-    }, function (callback) {
-        var tasks = config.compileToModules
-            .filter(function (moduleType) {
+    }, (callback) => {
+        const tasks = config.compileToModules
+            .filter((moduleType) => {
             return moduleType !== 'native-modules';
         })
-            .map(function (moduleType) {
-            return "build-typescript-" + moduleType;
+            .map((moduleType) => {
+            return `build-typescript-${moduleType}`;
         })
             .concat(config.useTypeScriptForDTS ? ['build-typescript-dts'] : []);
         return gulptraum.gulpAdapter.runTasksParallel(tasks, callback);

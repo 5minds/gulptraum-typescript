@@ -2,8 +2,8 @@ define(["require", "exports", "./tsconfig", "typescript"], function (require, ex
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     function initializeTypeScriptOptions(buildStepConfig) {
-        var resolvedTsConfig = tsconfig.getTypeScriptConfig(buildStepConfig);
-        return function (override) {
+        const resolvedTsConfig = tsconfig.getTypeScriptConfig(buildStepConfig);
+        return (override) => {
             return Object.assign(resolvedTsConfig.compilerOptions, {
                 target: override && override.target || 'es5',
                 typescript: typescript,
