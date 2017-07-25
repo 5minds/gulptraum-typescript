@@ -1,8 +1,5 @@
 {
   "name": "gulptraum-typescript",
-  "publishConfig": {
-    "registry": "https://www.npmjs.com"
-  },
   "version": "1.0.0",
   "description": "TypeScript plugin for gulptraum.",
   "main": "dist/commonjs/index.js",
