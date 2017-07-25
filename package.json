@@ -1,6 +1,6 @@
 {
   "name": "gulptraum-typescript",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "TypeScript plugin for gulptraum.",
   "main": "dist/commonjs/index.js",
   "typings": "dist/index.d.ts",
@@ -52,6 +52,7 @@
     "gulp-typedoc": "^2.0.2",
     "gulp-typescript": "^3.2.1",
     "through2": "^2.0.3",
+    "tslint": "^5.5.0",
     "typedoc": "^0.7.1",
     "typescript": "^2.4.2",
     "vinyl-paths": "^2.1.0",
