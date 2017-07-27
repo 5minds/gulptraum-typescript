@@ -4,6 +4,7 @@ var path = require("path");
 var tsJsonSchema = require("typescript-json-schema");
 var through = require("through2");
 var File = require("vinyl");
+var ts = require("typescript");
 function generate(gulp, config, gulptraum) {
     var outputFolderPath = path.resolve(config.paths.root, config.paths.schemaOutput);
     gulptraum.task('typescript-schema', {
@@ -63,10 +64,16 @@ function generateSchemasHelper() {
     });
 }
 function getExportedSymbols() {
-    var ts = require('typescript');
-    var tsconfig = require('./tsconfig.json');
-    var host = ts.createCompilerHost(tsconfig.compilerOptions);
-    var program = ts.createProgram(['src/index.ts'], tsconfig.compilerOptions, host);
+    var compilerOptions = {
+        module: ts.ModuleKind.CommonJS,
+        target: ts.ScriptTarget.ES2017,
+        lib: [
+            "es2017",
+            "dom"
+        ]
+    };
+    var host = ts.createCompilerHost(compilerOptions);
+    var program = ts.createProgram(['src/index.ts'], compilerOptions, host);
     ts.getPreEmitDiagnostics(program);
     var checker = program.getTypeChecker();
     var entryFile = program.getSourceFile('src/index.ts');

@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as tsJsonSchema from 'typescript-json-schema';
 import * as through from 'through2';
 import * as File from 'vinyl';
+import * as ts from 'typescript';
 
 export function generate(gulp, config, gulptraum): void {
 
@@ -88,11 +89,17 @@ function generateSchemasHelper() {
 
 function getExportedSymbols() {
 
-  const ts = require('typescript');
-  const tsconfig = require('./tsconfig.json');
+  const compilerOptions = {
+    module: ts.ModuleKind.CommonJS,
+    target: ts.ScriptTarget.ES2017,
+    lib: [
+      "es2017",
+      "dom"
+    ]
+  };
 
-  const host = ts.createCompilerHost(tsconfig.compilerOptions);
-  const program = ts.createProgram(['src/index.ts'], tsconfig.compilerOptions, host);
+  const host = ts.createCompilerHost(compilerOptions);
+  const program = ts.createProgram(['src/index.ts'], compilerOptions, host);
 
   ts.getPreEmitDiagnostics(program);
 
