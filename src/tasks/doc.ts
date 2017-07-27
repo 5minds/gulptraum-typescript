@@ -7,12 +7,11 @@ import * as through2 from 'through2';
 export function generate(gulp, config, gulptraum): void {
 
   const docsOutputFolderPath = path.resolve(config.paths.root, config.paths.doc);
-  const sourceOutputFolderPath = path.resolve(config.paths.root, config.paths.output);
 
   gulptraum.task('doc-typescript-generate', {
     help: 'Generates the documentation from your TypeScript source code using TypeDoc'
   }, function docTypescriptGenerate() {
-    return gulp.src([`${sourceOutputFolderPath}/${config.packageName}.d.ts`])
+    return gulp.src([config.paths.source])
       .pipe(typedoc({
         target: 'es6',
         includeDeclarations: true,
@@ -68,5 +67,3 @@ export function generate(gulp, config, gulptraum): void {
   });
 
 }
-
-module.exports.generate = generate;

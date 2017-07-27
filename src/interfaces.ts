@@ -3,6 +3,7 @@ import {IPluginConfiguration, IBuildSystemPathsConfiguration} from 'new_gulptrau
 export interface ITypeScriptPluginPathsConfiguration extends IBuildSystemPathsConfiguration {
   typings?: string;
   tslintConfig?: string;
+  schemaOutput?: string;
 }
 
 export interface ITypeScriptPluginConfiguration extends IPluginConfiguration<ITypeScriptPluginPathsConfiguration> {

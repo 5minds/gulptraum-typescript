@@ -9,6 +9,7 @@ exports.getDefaultConfig = function (buildSystemConfig) {
     paths.source = path.resolve(buildSystemConfig.paths.root, buildSystemConfig.paths.source) + "/**/*.ts";
     paths.typings = path.resolve(buildSystemConfig.paths.root, 'typings/') + "/**/*.d.ts";
     paths.tslintConfig = tslintConfigExists ? tslintConfigPath : undefined;
+    paths.schemaOutput = 'schemas';
     var pluginConfig = {
         pluginName: 'typescript',
         paths: paths,

@@ -13,6 +13,5 @@ function generate(gulp, config, gulptraum) {
     });
 }
 exports.generate = generate;
-module.exports.generate = generate;
 
 //# sourceMappingURL=watch.js.map

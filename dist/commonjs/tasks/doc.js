@@ -7,11 +7,10 @@ var typedoc = require("gulp-typedoc");
 var through2 = require("through2");
 function generate(gulp, config, gulptraum) {
     var docsOutputFolderPath = path.resolve(config.paths.root, config.paths.doc);
-    var sourceOutputFolderPath = path.resolve(config.paths.root, config.paths.output);
     gulptraum.task('doc-typescript-generate', {
         help: 'Generates the documentation from your TypeScript source code using TypeDoc'
     }, function docTypescriptGenerate() {
-        return gulp.src([sourceOutputFolderPath + "/" + config.packageName + ".d.ts"])
+        return gulp.src([config.paths.source])
             .pipe(typedoc({
             target: 'es6',
             includeDeclarations: true,
@@ -60,6 +59,5 @@ function generate(gulp, config, gulptraum) {
     });
 }
 exports.generate = generate;
-module.exports.generate = generate;
 
 //# sourceMappingURL=doc.js.map
