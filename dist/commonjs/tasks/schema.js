@@ -55,6 +55,10 @@ function generateSchemasHelper() {
         generatedSchemas.forEach(function (schema) {
             indexContents += "module.exports." + schema + " = require('./" + schema + ".json');\n";
         });
+        var heritage = getExportHeritage();
+        indexContents += "module.exports._heritage = ";
+        indexContents += JSON.stringify(heritage, null, 2);
+        indexContents += ";\n";
         var indexFile = new File({
             path: 'index.js',
             contents: new Buffer(indexContents, 'utf8')
@@ -86,6 +90,57 @@ function getExportedSymbols() {
         return symbol.name;
     });
     return exportedSymbols;
+}
+function getExportHeritage() {
+    var compilerOptions = {
+        module: ts.ModuleKind.CommonJS,
+        target: ts.ScriptTarget.ES2017,
+        lib: [
+            "es2017",
+            "dom"
+        ]
+    };
+    var host = ts.createCompilerHost(compilerOptions);
+    var program = ts.createProgram(['src/index.ts'], compilerOptions, host);
+    ts.getPreEmitDiagnostics(program);
+    var checker = program.getTypeChecker();
+    var entryFile = program.getSourceFile('src/index.ts');
+    var entrySymbol = checker.getSymbolAtLocation(entryFile);
+    var entryExports = checker.getExportsOfModule(entrySymbol);
+    var heritage = {};
+    var exportedSymbols = entryExports.map(function (symbol) {
+        if (symbol.getFlags() & ts.SymbolFlags.Alias) {
+            symbol = checker.getAliasedSymbol(symbol);
+        }
+        var name = symbol.name;
+        var interfaces = [];
+        var declaration = symbol.valueDeclaration;
+        if (!declaration) {
+            return;
+        }
+        if (!Array.isArray(declaration.heritageClauses)) {
+            return;
+        }
+        for (var _i = 0, _a = declaration.heritageClauses; _i < _a.length; _i++) {
+            var heritageClause = _a[_i];
+            if (!heritageClause) {
+                return;
+            }
+            if (!Array.isArray(heritageClause.types)) {
+                return;
+            }
+            for (var _b = 0, _c = heritageClause.types; _b < _c.length; _b++) {
+                var type = _c[_b];
+                if (!type) {
+                    return;
+                }
+                var interfaceName = type.getText();
+                interfaces.push(interfaceName);
+            }
+        }
+        heritage[name] = interfaces;
+    });
+    return heritage;
 }
 
 //# sourceMappingURL=schema.js.map

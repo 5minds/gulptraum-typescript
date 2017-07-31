@@ -76,6 +76,12 @@ function generateSchemasHelper() {
       indexContents += `module.exports.${schema} = require('./${schema}.json');\n`;
     });
 
+    const heritage = getExportHeritage();
+
+    indexContents += `module.exports._heritage = `;
+    indexContents += JSON.stringify(heritage, null, 2);
+    indexContents += `;\n`;
+
     const indexFile = new File({
       path: 'index.js',
       contents: new Buffer(indexContents, 'utf8')
@@ -118,4 +124,75 @@ function getExportedSymbols() {
   });
 
   return exportedSymbols;
+}
+
+function getExportHeritage(): any {
+
+  const compilerOptions = {
+    module: ts.ModuleKind.CommonJS,
+    target: ts.ScriptTarget.ES2017,
+    lib: [
+      "es2017",
+      "dom"
+    ]
+  };
+
+  const host = ts.createCompilerHost(compilerOptions);
+  const program = ts.createProgram(['src/index.ts'], compilerOptions, host);
+
+  ts.getPreEmitDiagnostics(program);
+
+  const checker = program.getTypeChecker();
+  const entryFile = program.getSourceFile('src/index.ts');
+  const entrySymbol = checker.getSymbolAtLocation(entryFile);
+  const entryExports = checker.getExportsOfModule(entrySymbol);
+
+  const heritage = {};
+
+  for (let symbol of entryExports) {
+    
+    if (symbol.getFlags() & ts.SymbolFlags.Alias) {
+      symbol = checker.getAliasedSymbol(symbol);
+    }
+
+    const name = symbol.name;
+    
+    const interfaces = [];
+
+    const declaration = <ts.ClassLikeDeclaration>symbol.valueDeclaration;
+
+    if (!declaration) {
+      return;
+    }
+
+    if (!Array.isArray(declaration.heritageClauses)) {
+      return;
+    }
+
+    for (const heritageClause of declaration.heritageClauses) {
+
+      if (!heritageClause) {
+        return;
+      }
+  
+      if (!Array.isArray(heritageClause.types)) {
+        return;
+      }
+
+      for (const type of heritageClause.types) {
+        
+        if (!type) {
+          return;
+        }
+
+        const interfaceName = type.getText();
+
+        interfaces.push(interfaceName);
+      }
+    }
+
+    heritage[name] = interfaces;
+  });
+
+  return heritage;
 }
