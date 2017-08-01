@@ -159,40 +159,42 @@ function getExportHeritage(): any {
     
     const interfaces = [];
 
-    const declaration = <ts.ClassLikeDeclaration>symbol.valueDeclaration;
-
-    if (!declaration) {
-      return;
+    if (!symbol.declarations || !Array.isArray(symbol.declarations)) {
+      continue;
     }
-
-    if (!Array.isArray(declaration.heritageClauses)) {
-      return;
-    }
-
-    for (const heritageClause of declaration.heritageClauses) {
-
-      if (!heritageClause) {
-        return;
-      }
   
-      if (!Array.isArray(heritageClause.types)) {
-        return;
-      }
+    for (const symbolDeclaration of symbol.declarations) {
 
-      for (const type of heritageClause.types) {
+      const heritageClauses = (<ts.ClassLikeDeclaration>symbolDeclaration).heritageClauses;
+
+      if (!heritageClauses || !Array.isArray(heritageClauses)) {
+        continue;
+      }
+    
+      for (const heritageClause of (<ts.ClassLikeDeclaration>symbolDeclaration).heritageClauses) {
         
-        if (!type) {
-          return;
+        if (!heritageClause || !Array.isArray(heritageClause.types)) {
+          continue;
+        }
+        
+        for (const type of heritageClause.types) {
+          
+          if (!type) {
+            continue;
+          }
+  
+          const interfaceName = type.getText();
+
+          interfaces.push(interfaceName);
         }
 
-        const interfaceName = type.getText();
-
-        interfaces.push(interfaceName);
       }
     }
 
-    heritage[name] = interfaces;
-  });
+    if (interfaces.length > 0) {
+      heritage[name] = interfaces;
+    }
+  };
 
   return heritage;
 }

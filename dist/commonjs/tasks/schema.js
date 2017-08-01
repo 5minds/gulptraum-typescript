@@ -108,38 +108,42 @@ function getExportHeritage() {
     var entrySymbol = checker.getSymbolAtLocation(entryFile);
     var entryExports = checker.getExportsOfModule(entrySymbol);
     var heritage = {};
-    var exportedSymbols = entryExports.map(function (symbol) {
+    for (var _i = 0, entryExports_1 = entryExports; _i < entryExports_1.length; _i++) {
+        var symbol = entryExports_1[_i];
         if (symbol.getFlags() & ts.SymbolFlags.Alias) {
             symbol = checker.getAliasedSymbol(symbol);
         }
-        var name = symbol.name;
+        var name_1 = symbol.name;
         var interfaces = [];
-        var declaration = symbol.valueDeclaration;
-        if (!declaration) {
-            return;
+        if (!symbol.declarations || !Array.isArray(symbol.declarations)) {
+            continue;
         }
-        if (!Array.isArray(declaration.heritageClauses)) {
-            return;
-        }
-        for (var _i = 0, _a = declaration.heritageClauses; _i < _a.length; _i++) {
-            var heritageClause = _a[_i];
-            if (!heritageClause) {
-                return;
+        for (var _a = 0, _b = symbol.declarations; _a < _b.length; _a++) {
+            var symbolDeclaration = _b[_a];
+            var heritageClauses = symbolDeclaration.heritageClauses;
+            if (!heritageClauses || !Array.isArray(heritageClauses)) {
+                continue;
             }
-            if (!Array.isArray(heritageClause.types)) {
-                return;
-            }
-            for (var _b = 0, _c = heritageClause.types; _b < _c.length; _b++) {
-                var type = _c[_b];
-                if (!type) {
-                    return;
+            for (var _c = 0, _d = symbolDeclaration.heritageClauses; _c < _d.length; _c++) {
+                var heritageClause = _d[_c];
+                if (!heritageClause || !Array.isArray(heritageClause.types)) {
+                    continue;
                 }
-                var interfaceName = type.getText();
-                interfaces.push(interfaceName);
+                for (var _e = 0, _f = heritageClause.types; _e < _f.length; _e++) {
+                    var type = _f[_e];
+                    if (!type) {
+                        continue;
+                    }
+                    var interfaceName = type.getText();
+                    interfaces.push(interfaceName);
+                }
             }
         }
-        heritage[name] = interfaces;
-    });
+        if (interfaces.length > 0) {
+            heritage[name_1] = interfaces;
+        }
+    }
+    ;
     return heritage;
 }
 

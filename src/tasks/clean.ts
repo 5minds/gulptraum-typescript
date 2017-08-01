@@ -5,7 +5,8 @@ import * as path from 'path';
 export function generate(gulp, config, gulptraum): void {
 
   const outputFolderPath = path.resolve(config.paths.root, config.paths.output);
-
+  const schemaOutputFolderPath = path.resolve(config.paths.root, config.paths.schemaOutput);
+  
   gulptraum.task('build-typescript-clean', {
     help: 'Cleans the files compiled from your TypeScript source code'
   }, () => {

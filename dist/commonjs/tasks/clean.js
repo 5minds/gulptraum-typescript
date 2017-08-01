@@ -5,6 +5,7 @@ var vinylPaths = require("vinyl-paths");
 var path = require("path");
 function generate(gulp, config, gulptraum) {
     var outputFolderPath = path.resolve(config.paths.root, config.paths.output);
+    var schemaOutputFolderPath = path.resolve(config.paths.root, config.paths.schemaOutput);
     gulptraum.task('build-typescript-clean', {
         help: 'Cleans the files compiled from your TypeScript source code'
     }, function () {
