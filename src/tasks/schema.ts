@@ -40,6 +40,12 @@ function generateSchemasHelper() {
     const program = tsJsonSchema.getProgramFromFiles([file.path], compilerOptions);
 
     const generator = tsJsonSchema.buildGenerator(program);
+
+    if (!generator) {
+      console.log('errors during TypeScript compilation - exiting...');
+      return;
+    }
+
     const symbols = generator.getUserSymbols();
 
     symbols.forEach((symbol) => {
