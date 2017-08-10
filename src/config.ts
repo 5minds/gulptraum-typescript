@@ -12,7 +12,7 @@ export const getDefaultConfig: IConfigurationHook
 
   let paths: ITypeScriptPluginPathsConfiguration = Object.assign({}, buildSystemConfig.paths);
   
-  paths.source = `${path.resolve(buildSystemConfig.paths.root, buildSystemConfig.paths.source)}/**/*.ts`;
+  paths.source = `${path.resolve(buildSystemConfig.paths.root, buildSystemConfig.paths.source)}/**/*.ts*`;
   paths.typings = `${path.resolve(buildSystemConfig.paths.root, 'typings/')}/**/*.d.ts`;
   paths.tslintConfig = tslintConfigExists ? tslintConfigPath : undefined;
   paths.schemaOutput = 'schemas';
