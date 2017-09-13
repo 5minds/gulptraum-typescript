@@ -5,7 +5,7 @@ import * as typedoc from 'gulp-typedoc';
 import * as through2 from 'through2';
 
 export function generate(gulp, config, gulptraum): void {
-  
+
   const docsOutputFolderPath = path.resolve(config.paths.root, config.paths.doc);
   let defaultCompilerOptions = {
     target: 'es6',
