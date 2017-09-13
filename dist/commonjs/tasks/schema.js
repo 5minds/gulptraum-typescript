@@ -6,25 +6,29 @@ var through = require("through2");
 var File = require("vinyl");
 var ts = require("typescript");
 function generate(gulp, config, gulptraum) {
+    var defaultCompilerOptions = {
+        lib: ['es2015', 'dom'],
+        noEmitOnError: false
+    };
+    var currentCompilerOptions = Object.assign({}, defaultCompilerOptions);
+    if (config.config && config.config.compilerOptions) {
+        currentCompilerOptions = Object.assign(currentCompilerOptions, config.config.compilerOptions);
+    }
+    currentCompilerOptions.lib = currentCompilerOptions.lib.map(function (libName) {
+        return "lib." + libName + ".d.ts";
+    });
     var outputFolderPath = path.resolve(config.paths.root, config.paths.schemaOutput);
     gulptraum.task('typescript-schema', {
         help: 'Generates JSON schemas from your TypeScript sources'
     }, function (callback) {
         return gulp.src(['src/**/*.ts'])
-            .pipe(generateSchemasHelper())
+            .pipe(generateSchemasHelper(currentCompilerOptions))
             .pipe(gulp.dest(outputFolderPath));
     });
 }
 exports.generate = generate;
-function generateSchemasHelper() {
-    var compilerOptions = {
-        lib: [
-            'lib.es2015.d.ts',
-            'lib.dom.d.ts'
-        ],
-        noEmitOnError: false
-    };
-    var exportedSymbols = getExportedSymbols();
+function generateSchemasHelper(compilerOptions) {
+    var exportedSymbols = getExportedSymbols(compilerOptions);
     var generatedSchemas = [];
     return through.obj(function (file, enc, cb) {
         var _this = this;
@@ -59,7 +63,7 @@ function generateSchemasHelper() {
         generatedSchemas.forEach(function (schema) {
             indexContents += "module.exports." + schema + " = require('./" + schema + ".json');\n";
         });
-        var heritage = getExportHeritage();
+        var heritage = getExportHeritage(compilerOptions);
         indexContents += "module.exports._heritage = ";
         indexContents += JSON.stringify(heritage, null, 2);
         indexContents += ";\n";
@@ -71,15 +75,7 @@ function generateSchemasHelper() {
         cb();
     });
 }
-function getExportedSymbols() {
-    var compilerOptions = {
-        module: ts.ModuleKind.CommonJS,
-        target: ts.ScriptTarget.ES2017,
-        lib: [
-            "es2017",
-            "dom"
-        ]
-    };
+function getExportedSymbols(compilerOptions) {
     var host = ts.createCompilerHost(compilerOptions);
     var program = ts.createProgram(['src/index.ts'], compilerOptions, host);
     ts.getPreEmitDiagnostics(program);
@@ -95,15 +91,7 @@ function getExportedSymbols() {
     });
     return exportedSymbols;
 }
-function getExportHeritage() {
-    var compilerOptions = {
-        module: ts.ModuleKind.CommonJS,
-        target: ts.ScriptTarget.ES2017,
-        lib: [
-            "es2017",
-            "dom"
-        ]
-    };
+function getExportHeritage(compilerOptions) {
     var host = ts.createCompilerHost(compilerOptions);
     var program = ts.createProgram(['src/index.ts'], compilerOptions, host);
     ts.getPreEmitDiagnostics(program);
