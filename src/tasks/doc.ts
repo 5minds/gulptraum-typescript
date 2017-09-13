@@ -5,7 +5,7 @@ import * as typedoc from 'gulp-typedoc';
 import * as through2 from 'through2';
 
 export function generate(gulp, config, gulptraum): void {
-
+  console.log(config);
   const docsOutputFolderPath = path.resolve(config.paths.root, config.paths.doc);
   let defaultCompilerOptions = {
     target: 'es6',
@@ -21,8 +21,8 @@ export function generate(gulp, config, gulptraum): void {
   };
 
   let currentCompilerOptions = Object.assign({}, defaultCompilerOptions);
-  if (config.config && config.config.compilerOptions) {
-    currentCompilerOptions = Object.assign(currentCompilerOptions, config.config.compilerOptions);
+  if (config.compilerOptions) {
+    currentCompilerOptions = Object.assign(currentCompilerOptions, config.compilerOptions);
   }
 
   if (currentCompilerOptions.lib) {
@@ -31,6 +31,7 @@ export function generate(gulp, config, gulptraum): void {
     })
   }
 
+  console.log(currentCompilerOptions)
   gulptraum.task('doc-typescript-generate', {
     help: 'Generates the documentation from your TypeScript source code using TypeDoc'
   }, function docTypescriptGenerate() {
