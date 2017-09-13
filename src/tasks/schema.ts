@@ -7,16 +7,17 @@ import * as ts from 'typescript';
 
 export function generate(gulp, config, gulptraum): void {
 
-  let compilerOptions = {
+  const defaultCompilerOptions = {
     lib: ['es2015', 'dom'],
     noEmitOnError: false
   };
 
+  let currentCompilerOptions = Object.assign({}, defaultCompilerOptions);
   if (config.config && config.config.compilerOptions) {
-    compilerOptions = Object.assign(compilerOptions, config.config.compilerOptions);
+    currentCompilerOptions = Object.assign(currentCompilerOptions, config.config.compilerOptions);
   }
 
-  compilerOptions.lib = compilerOptions.lib.map((libName: string) => {
+  currentCompilerOptions.lib = currentCompilerOptions.lib.map((libName: string) => {
     return `lib.${libName}.d.ts`;
   })
   const outputFolderPath = path.resolve(config.paths.root, config.paths.schemaOutput);
@@ -26,7 +27,7 @@ export function generate(gulp, config, gulptraum): void {
   }, (callback) => {
 
     return gulp.src(['src/**/*.ts'])
-      .pipe(generateSchemasHelper(compilerOptions))
+      .pipe(generateSchemasHelper(currentCompilerOptions))
       .pipe(gulp.dest(outputFolderPath));
 
   });

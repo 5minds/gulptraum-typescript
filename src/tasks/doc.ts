@@ -7,7 +7,7 @@ import * as through2 from 'through2';
 export function generate(gulp, config, gulptraum): void {
 
   const docsOutputFolderPath = path.resolve(config.paths.root, config.paths.doc);
-  let compilerOptions = {
+  let defaultCompilerOptions = {
     target: 'es6',
     includeDeclarations: true,
     moduleResolution: 'node',
@@ -20,12 +20,13 @@ export function generate(gulp, config, gulptraum): void {
     version: true,
   };
 
+  let currentCompilerOptions = Object.assign({}, defaultCompilerOptions);
   if (config.config && config.config.compilerOptions) {
-    compilerOptions = Object.assign(compilerOptions, config.config.compilerOptions);
+    currentCompilerOptions = Object.assign(currentCompilerOptions, config.config.compilerOptions);
   }
 
-  if (compilerOptions.lib) {
-    compilerOptions.lib = compilerOptions.lib.map((libName: string) => {
+  if (currentCompilerOptions.lib) {
+    currentCompilerOptions.lib = currentCompilerOptions.lib.map((libName: string) => {
       return `lib.${libName}.d.ts`;
     })
   }
@@ -34,7 +35,7 @@ export function generate(gulp, config, gulptraum): void {
     help: 'Generates the documentation from your TypeScript source code using TypeDoc'
   }, function docTypescriptGenerate() {
     return gulp.src([config.paths.source])
-      .pipe(typedoc(compilerOptions));
+      .pipe(typedoc(currentCompilerOptions));
   });
 
   gulptraum.task('doc-typescript-shape', {
