@@ -23,6 +23,8 @@ export function generate(gulp, config, gulptraum): void {
   let currentCompilerOptions = Object.assign({}, defaultCompilerOptions);
   if (config.compilerOptions) {
     currentCompilerOptions = Object.assign(currentCompilerOptions, config.compilerOptions);
+  } else if (config.config && config.config.compilerOptions) {
+    currentCompilerOptions = Object.assign(currentCompilerOptions, config.config.compilerOptions);
   }
 
   if (currentCompilerOptions.lib) {
