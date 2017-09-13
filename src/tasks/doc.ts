@@ -7,23 +7,35 @@ import * as through2 from 'through2';
 export function generate(gulp, config, gulptraum): void {
 
   const docsOutputFolderPath = path.resolve(config.paths.root, config.paths.doc);
+  let defaultCompilerOptions = {
+    target: 'es6',
+    includeDeclarations: true,
+    moduleResolution: 'node',
+    json: `${config.paths.doc}/api.json`,
+    out: `${config.paths.doc}/`,
+    name: `${config.packageName}-docs`,
+    mode: 'modules',
+    excludeExternals: true,
+    ignoreCompilerErrors: false,
+    version: true,
+  };
+
+  let currentCompilerOptions = Object.assign({}, defaultCompilerOptions);
+  if (config.config && config.config.compilerOptions) {
+    currentCompilerOptions = Object.assign(currentCompilerOptions, config.config.compilerOptions);
+  }
+
+  if (currentCompilerOptions.lib) {
+    currentCompilerOptions.lib = currentCompilerOptions.lib.map((libName: string) => {
+      return `lib.${libName}.d.ts`;
+    })
+  }
 
   gulptraum.task('doc-typescript-generate', {
     help: 'Generates the documentation from your TypeScript source code using TypeDoc'
   }, function docTypescriptGenerate() {
     return gulp.src([config.paths.source])
-      .pipe(typedoc({
-        target: 'es6',
-        includeDeclarations: true,
-        moduleResolution: 'node',
-        json: `${config.paths.doc}/api.json`,
-        out: `${config.paths.doc}/`,
-        name: `${config.packageName}-docs`,
-        mode: 'modules',
-        excludeExternals: true,
-        ignoreCompilerErrors: false,
-        version: true,
-      }));
+      .pipe(typedoc(currentCompilerOptions));
   });
 
   gulptraum.task('doc-typescript-shape', {

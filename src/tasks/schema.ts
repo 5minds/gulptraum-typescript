@@ -7,6 +7,19 @@ import * as ts from 'typescript';
 
 export function generate(gulp, config, gulptraum): void {
 
+  const defaultCompilerOptions = {
+    lib: ['es2015', 'dom'],
+    noEmitOnError: false
+  };
+
+  let currentCompilerOptions = Object.assign({}, defaultCompilerOptions);
+  if (config.config && config.config.compilerOptions) {
+    currentCompilerOptions = Object.assign(currentCompilerOptions, config.config.compilerOptions);
+  }
+
+  currentCompilerOptions.lib = currentCompilerOptions.lib.map((libName: string) => {
+    return `lib.${libName}.d.ts`;
+  })
   const outputFolderPath = path.resolve(config.paths.root, config.paths.schemaOutput);
 
   gulptraum.task('typescript-schema', {
@@ -14,24 +27,16 @@ export function generate(gulp, config, gulptraum): void {
   }, (callback) => {
 
     return gulp.src(['src/**/*.ts'])
-      .pipe(generateSchemasHelper())
+      .pipe(generateSchemasHelper(currentCompilerOptions))
       .pipe(gulp.dest(outputFolderPath));
 
   });
 
 }
 
-function generateSchemasHelper() {
-  
-  const compilerOptions = {
-    lib: [
-      'lib.es2015.d.ts',
-      'lib.dom.d.ts'
-    ],
-    noEmitOnError: false
-  };
+function generateSchemasHelper(compilerOptions: any) {
 
-  const exportedSymbols = getExportedSymbols();
+  const exportedSymbols = getExportedSymbols(compilerOptions);
 
   const generatedSchemas = [];
 
@@ -82,7 +87,7 @@ function generateSchemasHelper() {
       indexContents += `module.exports.${schema} = require('./${schema}.json');\n`;
     });
 
-    const heritage = getExportHeritage();
+    const heritage = getExportHeritage(compilerOptions);
 
     indexContents += `module.exports._heritage = `;
     indexContents += JSON.stringify(heritage, null, 2);
@@ -99,16 +104,7 @@ function generateSchemasHelper() {
   });
 }
 
-function getExportedSymbols() {
-
-  const compilerOptions = {
-    module: ts.ModuleKind.CommonJS,
-    target: ts.ScriptTarget.ES2017,
-    lib: [
-      "es2017",
-      "dom"
-    ]
-  };
+function getExportedSymbols(compilerOptions: any) {
 
   const host = ts.createCompilerHost(compilerOptions);
   const program = ts.createProgram(['src/index.ts'], compilerOptions, host);
@@ -132,16 +128,7 @@ function getExportedSymbols() {
   return exportedSymbols;
 }
 
-function getExportHeritage(): any {
-
-  const compilerOptions = {
-    module: ts.ModuleKind.CommonJS,
-    target: ts.ScriptTarget.ES2017,
-    lib: [
-      "es2017",
-      "dom"
-    ]
-  };
+function getExportHeritage(compilerOptions: any): any {
 
   const host = ts.createCompilerHost(compilerOptions);
   const program = ts.createProgram(['src/index.ts'], compilerOptions, host);
