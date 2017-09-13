@@ -4,9 +4,12 @@ import * as tsJsonSchema from 'typescript-json-schema';
 import * as through from 'through2';
 import * as File from 'vinyl';
 import * as ts from 'typescript';
+import {initializeTypeScriptOptions} from './../setup/typescript-options';
 
 export function generate(gulp, config, gulptraum): void {
 
+  const getTypescriptOptions: any = initializeTypeScriptOptions(config);
+  
   const outputFolderPath = path.resolve(config.paths.root, config.paths.schemaOutput);
 
   gulptraum.task('typescript-schema', {
@@ -14,24 +17,24 @@ export function generate(gulp, config, gulptraum): void {
   }, (callback) => {
 
     return gulp.src(['src/**/*.ts'])
-      .pipe(generateSchemasHelper())
+      .pipe(generateSchemasHelper(getTypescriptOptions()))
       .pipe(gulp.dest(outputFolderPath));
 
   });
 
 }
 
-function generateSchemasHelper() {
+function generateSchemasHelper(compilerOptions: any) {
   
-  const compilerOptions = {
-    lib: [
-      'lib.es2015.d.ts',
-      'lib.dom.d.ts'
-    ],
-    noEmitOnError: false
-  };
+  // const compilerOptions = {
+  //   lib: [
+  //     'lib.es2015.d.ts',
+  //     'lib.dom.d.ts'
+  //   ],
+  //   noEmitOnError: false
+  // };
 
-  const exportedSymbols = getExportedSymbols();
+  const exportedSymbols = getExportedSymbols(compilerOptions);
 
   const generatedSchemas = [];
 
@@ -82,7 +85,7 @@ function generateSchemasHelper() {
       indexContents += `module.exports.${schema} = require('./${schema}.json');\n`;
     });
 
-    const heritage = getExportHeritage();
+    const heritage = getExportHeritage(compilerOptions);
 
     indexContents += `module.exports._heritage = `;
     indexContents += JSON.stringify(heritage, null, 2);
@@ -99,16 +102,16 @@ function generateSchemasHelper() {
   });
 }
 
-function getExportedSymbols() {
+function getExportedSymbols(compilerOptions: any) {
 
-  const compilerOptions = {
-    module: ts.ModuleKind.CommonJS,
-    target: ts.ScriptTarget.ES2017,
-    lib: [
-      "es2017",
-      "dom"
-    ]
-  };
+  // const compilerOptions = {
+  //   module: ts.ModuleKind.CommonJS,
+  //   target: ts.ScriptTarget.ES2017,
+  //   lib: [
+  //     "es2017",
+  //     "dom"
+  //   ]
+  // };
 
   const host = ts.createCompilerHost(compilerOptions);
   const program = ts.createProgram(['src/index.ts'], compilerOptions, host);
@@ -132,16 +135,16 @@ function getExportedSymbols() {
   return exportedSymbols;
 }
 
-function getExportHeritage(): any {
+function getExportHeritage(compilerOptions: any): any {
 
-  const compilerOptions = {
-    module: ts.ModuleKind.CommonJS,
-    target: ts.ScriptTarget.ES2017,
-    lib: [
-      "es2017",
-      "dom"
-    ]
-  };
+  // const compilerOptions = {
+  //   module: ts.ModuleKind.CommonJS,
+  //   target: ts.ScriptTarget.ES2017,
+  //   lib: [
+  //     "es2017",
+  //     "dom"
+  //   ]
+  // };
 
   const host = ts.createCompilerHost(compilerOptions);
   const program = ts.createProgram(['src/index.ts'], compilerOptions, host);
