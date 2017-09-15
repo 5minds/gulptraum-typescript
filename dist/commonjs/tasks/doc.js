@@ -20,7 +20,10 @@ function generate(gulp, config, gulptraum) {
         version: true,
     };
     var currentCompilerOptions = Object.assign({}, defaultCompilerOptions);
-    if (config.config && config.config.compilerOptions) {
+    if (config.compilerOptions) {
+        currentCompilerOptions = Object.assign(currentCompilerOptions, config.compilerOptions);
+    }
+    else if (config.config && config.config.compilerOptions) {
         currentCompilerOptions = Object.assign(currentCompilerOptions, config.config.compilerOptions);
     }
     if (currentCompilerOptions.lib) {

@@ -11,7 +11,10 @@ function generate(gulp, config, gulptraum) {
         noEmitOnError: false
     };
     var currentCompilerOptions = Object.assign({}, defaultCompilerOptions);
-    if (config.config && config.config.compilerOptions) {
+    if (config.compilerOptions) {
+        currentCompilerOptions = Object.assign(currentCompilerOptions, config.compilerOptions);
+    }
+    else if (config.config && config.config.compilerOptions) {
         currentCompilerOptions = Object.assign(currentCompilerOptions, config.config.compilerOptions);
     }
     currentCompilerOptions.lib = currentCompilerOptions.lib.map(function (libName) {
