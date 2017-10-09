@@ -57,7 +57,7 @@
     "tslint": "^5.5.0",
     "typedoc": "^0.8.0",
     "typescript": "^2.4.2",
-    "typescript-json-schema": "git://github.com/ProcessEngineJS/typescript-json-schema.git#feature/methods",
+    "typescript-json-schema": "git://github.com/essential-projects/typescript-json-schema.git#feature/methods",
     "vinyl-paths": "^2.1.0",
     "yargs": "^8.0.2"
   },
