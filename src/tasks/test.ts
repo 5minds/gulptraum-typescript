@@ -4,6 +4,7 @@ import * as vinylPaths from 'vinyl-paths';
 import * as path from 'path';
 import * as ts from 'gulp-typescript';
 import * as mocha from 'gulp-mocha';
+import * as shelljs from 'shelljs';
 import {initializeTypeScriptOptions} from './../setup/typescript-options';
 
 export function generate(gulp, config, gulptraum): void {
@@ -23,11 +24,22 @@ export function generate(gulp, config, gulptraum): void {
     // this is necessary to be able to use the following syntax inside a unit test:
     // import {someExportOfThePackageWeAreWorkingOn} from 'thePackageWeAreWorkingOn';
     const currentPath = path.resolve(config.paths.root);
-    const symlinkTargetPath = path.resolve(`${config.paths.root}/node_modules/${config.fullPackageName}`);
-
+    let symlinkFolderPath = path.resolve(`${config.paths.root}/node_modules`);
+    const symlinkTargetPath = path.resolve(`${symlinkFolderPath}/${config.fullPackageName}`);
+    
+    if (config.fullPackageName[0] === '@') {
+      const packageScopeFolder = config.fullPackageName.split('/')[0];
+      symlinkFolderPath = path.resolve(`${symlinkFolderPath}/${packageScopeFolder}`);
+    }
+    
     const symlinkExists = fs.existsSync(symlinkTargetPath);
 
     if (!symlinkExists) {
+
+      if (!fs.existsSync(symlinkFolderPath)){
+        shelljs.mkdir('-p', symlinkFolderPath);
+      }
+
       fs.symlinkSync(currentPath, symlinkTargetPath, 'junction');
     }
 
