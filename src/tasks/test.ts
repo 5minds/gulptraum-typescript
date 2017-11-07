@@ -23,7 +23,7 @@ export function generate(gulp, config, gulptraum): void {
     // this is necessary to be able to use the following syntax inside a unit test:
     // import {someExportOfThePackageWeAreWorkingOn} from 'thePackageWeAreWorkingOn';
     const currentPath = path.resolve(config.paths.root);
-    const symlinkTargetPath = path.resolve(`${config.paths.root}/node_modules/${config.packageName}`);
+    const symlinkTargetPath = path.resolve(`${config.paths.root}/node_modules/${config.fullPackageName}`);
 
     const symlinkExists = fs.existsSync(symlinkTargetPath);
 

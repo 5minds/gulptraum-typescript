@@ -17,7 +17,7 @@ function generate(gulp, config, gulptraum) {
         help: 'Builds your TypeScript test source code'
     }, function () {
         var currentPath = path.resolve(config.paths.root);
-        var symlinkTargetPath = path.resolve(config.paths.root + "/node_modules/" + config.packageName);
+        var symlinkTargetPath = path.resolve(config.paths.root + "/node_modules/" + config.fullPackageName);
         var symlinkExists = fs.existsSync(symlinkTargetPath);
         if (!symlinkExists) {
             fs.symlinkSync(currentPath, symlinkTargetPath, 'junction');
