@@ -14,6 +14,12 @@ function generate(gulp, config, gulptraum) {
     var sourceOutputFolderPath = path.resolve(config.paths.root, config.paths.output);
     var testsOutputFolderPath = path.resolve(config.paths.root, config.paths.testOutput);
     var typingsGlobPath = path.resolve(config.paths.root, config.paths.typings);
+    gulptraum.task('test-typescript-clean', {
+        help: 'Cleans all test files built by the TypeScript plugin'
+    }, function () {
+        return gulp.src("" + testsOutputFolderPath)
+            .pipe(vinylPaths(del));
+    });
     if (!fs.existsSync(testsFolderPath)) {
         return;
     }
@@ -62,12 +68,6 @@ function generate(gulp, config, gulptraum) {
             console.error(error);
             process.exit(1);
         });
-    });
-    gulptraum.task('test-typescript-clean', {
-        help: 'Cleans all test files built by the TypeScript plugin'
-    }, function () {
-        return gulp.src("" + testsOutputFolderPath)
-            .pipe(vinylPaths(del));
     });
     gulptraum.task('test-typescript', {
         help: 'Runs all TypeScript tests'

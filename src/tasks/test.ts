@@ -16,6 +16,13 @@ export function generate(gulp, config, gulptraum): void {
   const testsOutputFolderPath = path.resolve(config.paths.root, config.paths.testOutput);
   const typingsGlobPath = path.resolve(config.paths.root, config.paths.typings);
 
+  gulptraum.task('test-typescript-clean', {
+    help: 'Cleans all test files built by the TypeScript plugin'
+  }, () => {
+    return gulp.src(`${testsOutputFolderPath}`)
+      .pipe(vinylPaths(del));
+  });
+
   if (!fs.existsSync(testsFolderPath)) {
     return;
   }
@@ -80,13 +87,6 @@ export function generate(gulp, config, gulptraum): void {
         console.error(error);
         process.exit(1);
       });
-  });
-
-  gulptraum.task('test-typescript-clean', {
-    help: 'Cleans all test files built by the TypeScript plugin'
-  }, () => {
-    return gulp.src(`${testsOutputFolderPath}`)
-      .pipe(vinylPaths(del));
   });
 
   gulptraum.task('test-typescript', {
