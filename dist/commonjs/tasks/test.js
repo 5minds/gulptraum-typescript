@@ -14,6 +14,9 @@ function generate(gulp, config, gulptraum) {
     var sourceOutputFolderPath = path.resolve(config.paths.root, config.paths.output);
     var testsOutputFolderPath = path.resolve(config.paths.root, config.paths.testOutput);
     var typingsGlobPath = path.resolve(config.paths.root, config.paths.typings);
+    if (!fs.existsSync(testsFolderPath)) {
+        return;
+    }
     gulptraum.task('test-typescript-build', {
         help: 'Builds your TypeScript test source code'
     }, function () {

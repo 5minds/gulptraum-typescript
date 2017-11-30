@@ -16,6 +16,10 @@ export function generate(gulp, config, gulptraum): void {
   const testsOutputFolderPath = path.resolve(config.paths.root, config.paths.testOutput);
   const typingsGlobPath = path.resolve(config.paths.root, config.paths.typings);
 
+  if (!fs.existsSync(testsFolderPath)) {
+    return;
+  }
+
   gulptraum.task('test-typescript-build', {
     help: 'Builds your TypeScript test source code'
   }, () => {
