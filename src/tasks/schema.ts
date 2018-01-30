@@ -40,6 +40,8 @@ function generateSchemasHelper(compilerOptions: any) {
 
   const exportedSymbols = getExportedSymbols(compilerOptions);
 
+  const heritage = JSON.stringify(getExportHeritage(compilerOptions), null, 2);
+
   const generatedSchemas = [];
 
   return through.obj(function (file, enc, cb) {
@@ -89,11 +91,7 @@ function generateSchemasHelper(compilerOptions: any) {
       indexContents += `module.exports.${schema} = require('./${schema}.json');\n`;
     });
 
-    const heritage = getExportHeritage(compilerOptions);
-
-    indexContents += `module.exports._heritage = `;
-    indexContents += JSON.stringify(heritage, null, 2);
-    indexContents += `;\n`;
+    indexContents += `module.exports._heritage = ${heritage};\n`;
 
     const indexFile = new File({
       path: 'index.js',
