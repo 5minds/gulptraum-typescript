@@ -32,11 +32,14 @@ function generate(gulp, config, gulptraum) {
 exports.generate = generate;
 function generateSchemasHelper(compilerOptions) {
     var exportedSymbols = getExportedSymbols(compilerOptions);
+    var heritage = JSON.stringify(getExportHeritage(compilerOptions), null, 2);
     var generatedSchemas = [];
     return through.obj(function (file, enc, cb) {
         var _this = this;
         var program = tsJsonSchema.getProgramFromFiles([file.path], compilerOptions);
-        var generator = tsJsonSchema.buildGenerator(program);
+        var generator = tsJsonSchema.buildGenerator(program, {
+            required: true,
+        });
         if (!generator) {
             console.log('errors during TypeScript compilation - exiting...');
             return;
@@ -66,10 +69,7 @@ function generateSchemasHelper(compilerOptions) {
         generatedSchemas.forEach(function (schema) {
             indexContents += "module.exports." + schema + " = require('./" + schema + ".json');\n";
         });
-        var heritage = getExportHeritage(compilerOptions);
-        indexContents += "module.exports._heritage = ";
-        indexContents += JSON.stringify(heritage, null, 2);
-        indexContents += ";\n";
+        indexContents += "module.exports._heritage = " + heritage + ";\n";
         var indexFile = new File({
             path: 'index.js',
             contents: new Buffer(indexContents, 'utf8')

@@ -48,7 +48,9 @@ function generateSchemasHelper(compilerOptions: any) {
 
     const program = tsJsonSchema.getProgramFromFiles([file.path], compilerOptions);
 
-    const generator = tsJsonSchema.buildGenerator(program);
+    const generator = tsJsonSchema.buildGenerator(program, {
+      required: true,
+    });
 
     if (!generator) {
       console.log('errors during TypeScript compilation - exiting...');
