@@ -20,7 +20,7 @@ export function generate(gulp, config, gulptraum): void {
     version: true,
   };
 
-  let currentCompilerOptions = Object.assign({}, defaultCompilerOptions);
+  let currentCompilerOptions: any = Object.assign({}, defaultCompilerOptions);
   if (config.compilerOptions) {
     currentCompilerOptions = Object.assign(currentCompilerOptions, config.compilerOptions);
   } else if (config.config && config.config.compilerOptions) {

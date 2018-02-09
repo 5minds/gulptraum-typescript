@@ -5,6 +5,7 @@ var tsJsonSchema = require("typescript-json-schema");
 var through = require("through2");
 var File = require("vinyl");
 var ts = require("typescript");
+var glob = require("glob");
 function generate(gulp, config, gulptraum) {
     var defaultCompilerOptions = {
         lib: ['es2015', 'dom'],
@@ -24,27 +25,32 @@ function generate(gulp, config, gulptraum) {
     gulptraum.task('typescript-schema', {
         help: 'Generates JSON schemas from your TypeScript sources'
     }, function (callback) {
-        return gulp.src(['src/**/*.ts'])
-            .pipe(generateSchemasHelper(currentCompilerOptions))
-            .pipe(gulp.dest(outputFolderPath));
-    });
-}
-exports.generate = generate;
-function generateSchemasHelper(compilerOptions) {
-    var exportedSymbols = getExportedSymbols(compilerOptions);
-    var heritage = JSON.stringify(getExportHeritage(compilerOptions), null, 2);
-    var generatedSchemas = [];
-    return through.obj(function (file, enc, cb) {
-        var _this = this;
-        var program = tsJsonSchema.getProgramFromFiles([file.path], compilerOptions);
-        var generator = tsJsonSchema.buildGenerator(program, {
+        var host = ts.createCompilerHost(currentCompilerOptions);
+        var indexProgram = ts.createProgram([config.paths.sourceIndex], currentCompilerOptions, host);
+        var program = ts.createProgram([config.paths.source], currentCompilerOptions, host);
+        ts.getPreEmitDiagnostics(program);
+        var files = glob.sync(config.paths.source);
+        var schemaProgram = tsJsonSchema.getProgramFromFiles(files, currentCompilerOptions);
+        var generator = tsJsonSchema.buildGenerator(schemaProgram, {
             required: true,
         });
         if (!generator) {
             console.log('errors during TypeScript compilation - exiting...');
-            return;
+            process.exit(1);
         }
+        var exportedSymbols = getExportedSymbols(currentCompilerOptions, config);
+        var heritage = JSON.stringify(getExportHeritage(currentCompilerOptions, config), null, 2);
         var symbols = generator.getUserSymbols();
+        return gulp.src([config.paths.source])
+            .pipe(generateSchemasHelper(generator, symbols, exportedSymbols, heritage))
+            .pipe(gulp.dest(outputFolderPath));
+    });
+}
+exports.generate = generate;
+function generateSchemasHelper(generator, symbols, exportedSymbols, heritage) {
+    var generatedSchemas = [];
+    return through.obj(function (file, enc, cb) {
+        var _this = this;
         symbols.forEach(function (symbol) {
             var isMatch = exportedSymbols.some(function (exportedSymbol) {
                 return symbol == exportedSymbol;
@@ -78,28 +84,33 @@ function generateSchemasHelper(compilerOptions) {
         cb();
     });
 }
-function getExportedSymbols(compilerOptions) {
+function getExportedSymbols(compilerOptions, config) {
     var host = ts.createCompilerHost(compilerOptions);
-    var program = ts.createProgram(['src/index.ts'], compilerOptions, host);
+    var program = ts.createProgram([config.paths.sourceIndex], compilerOptions, host);
     ts.getPreEmitDiagnostics(program);
     var checker = program.getTypeChecker();
-    var entryFile = program.getSourceFile('src/index.ts');
+    var entryFile = program.getSourceFile(config.paths.sourceIndex);
     var entrySymbol = checker.getSymbolAtLocation(entryFile);
     var entryExports = checker.getExportsOfModule(entrySymbol);
     var exportedSymbols = entryExports.map(function (symbol) {
         if (symbol.getFlags() & ts.SymbolFlags.Alias) {
-            symbol = checker.getAliasedSymbol(symbol);
+            try {
+                symbol = checker.getAliasedSymbol(symbol);
+            }
+            catch (error) {
+                console.log(symbol);
+            }
         }
         return symbol.name;
     });
     return exportedSymbols;
 }
-function getExportHeritage(compilerOptions) {
+function getExportHeritage(compilerOptions, config) {
     var host = ts.createCompilerHost(compilerOptions);
-    var program = ts.createProgram(['src/index.ts'], compilerOptions, host);
+    var program = ts.createProgram([config.paths.sourceIndex], compilerOptions, host);
     ts.getPreEmitDiagnostics(program);
     var checker = program.getTypeChecker();
-    var entryFile = program.getSourceFile('src/index.ts');
+    var entryFile = program.getSourceFile(config.paths.sourceIndex);
     var entrySymbol = checker.getSymbolAtLocation(entryFile);
     var entryExports = checker.getExportsOfModule(entrySymbol);
     var heritage = {};

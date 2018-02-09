@@ -3,6 +3,7 @@ export interface ITypeScriptPluginPathsConfiguration extends IBuildSystemPathsCo
     typings?: string;
     tslintConfig?: string;
     schemaOutput?: string;
+    sourceIndex?: string;
 }
 export interface ITypeScriptPluginConfiguration extends IPluginConfiguration<ITypeScriptPluginPathsConfiguration> {
     useTypeScriptForDTS?: boolean;

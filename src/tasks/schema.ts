@@ -4,6 +4,7 @@ import * as tsJsonSchema from 'typescript-json-schema';
 import * as through from 'through2';
 import * as File from 'vinyl';
 import * as ts from 'typescript';
+import * as glob from 'glob';
 
 export function generate(gulp, config, gulptraum): void {
 
@@ -28,36 +29,42 @@ export function generate(gulp, config, gulptraum): void {
     help: 'Generates JSON schemas from your TypeScript sources'
   }, (callback) => {
 
-    return gulp.src(['src/**/*.ts'])
-      .pipe(generateSchemasHelper(currentCompilerOptions))
+    const host = ts.createCompilerHost(currentCompilerOptions);
+    const indexProgram = ts.createProgram([config.paths.sourceIndex], currentCompilerOptions, host);
+    const program = ts.createProgram([config.paths.source], currentCompilerOptions, host);
+
+    ts.getPreEmitDiagnostics(program);
+
+    const files = glob.sync(config.paths.source);
+    const schemaProgram = tsJsonSchema.getProgramFromFiles(files, currentCompilerOptions);
+    const generator = tsJsonSchema.buildGenerator(schemaProgram, {
+      required: true,
+    });
+
+    if (!generator) {
+      console.log('errors during TypeScript compilation - exiting...');
+      process.exit(1);
+    }
+
+    const exportedSymbols = getExportedSymbols(currentCompilerOptions, config);
+
+    const heritage = JSON.stringify(getExportHeritage(currentCompilerOptions, config), null, 2);
+
+    const symbols = generator.getUserSymbols();
+
+    return gulp.src([config.paths.source])
+      .pipe(generateSchemasHelper(generator, symbols, exportedSymbols, heritage))
       .pipe(gulp.dest(outputFolderPath));
 
   });
 
 }
 
-function generateSchemasHelper(compilerOptions: any) {
-
-  const exportedSymbols = getExportedSymbols(compilerOptions);
-
-  const heritage = JSON.stringify(getExportHeritage(compilerOptions), null, 2);
+function generateSchemasHelper(generator: any, symbols: any, exportedSymbols: any, heritage: any) {
 
   const generatedSchemas = [];
 
   return through.obj(function (file, enc, cb) {
-
-    const program = tsJsonSchema.getProgramFromFiles([file.path], compilerOptions);
-
-    const generator = tsJsonSchema.buildGenerator(program, {
-      required: true,
-    });
-
-    if (!generator) {
-      console.log('errors during TypeScript compilation - exiting...');
-      return;
-    }
-
-    const symbols = generator.getUserSymbols();
 
     symbols.forEach((symbol) => {
 
@@ -106,22 +113,29 @@ function generateSchemasHelper(compilerOptions: any) {
   });
 }
 
-function getExportedSymbols(compilerOptions: any) {
+function getExportedSymbols(compilerOptions: any, config: any): any {
 
   const host = ts.createCompilerHost(compilerOptions);
-  const program = ts.createProgram(['src/index.ts'], compilerOptions, host);
+  const program = ts.createProgram([config.paths.sourceIndex], compilerOptions, host);
 
   ts.getPreEmitDiagnostics(program);
 
   const checker = program.getTypeChecker();
-  const entryFile = program.getSourceFile('src/index.ts');
+  const entryFile = program.getSourceFile(config.paths.sourceIndex);
   const entrySymbol = checker.getSymbolAtLocation(entryFile);
   const entryExports = checker.getExportsOfModule(entrySymbol);
 
   const exportedSymbols = entryExports.map((symbol) => {
 
     if (symbol.getFlags() & ts.SymbolFlags.Alias) {
-      symbol = checker.getAliasedSymbol(symbol);
+
+      try {
+        symbol = checker.getAliasedSymbol(symbol);
+        
+      } catch (error) {
+        console.log(symbol);
+      }
+
     }
 
     return symbol.name;
@@ -130,15 +144,15 @@ function getExportedSymbols(compilerOptions: any) {
   return exportedSymbols;
 }
 
-function getExportHeritage(compilerOptions: any): any {
+function getExportHeritage(compilerOptions: any, config: any): any {
 
   const host = ts.createCompilerHost(compilerOptions);
-  const program = ts.createProgram(['src/index.ts'], compilerOptions, host);
+  const program = ts.createProgram([config.paths.sourceIndex], compilerOptions, host);
 
   ts.getPreEmitDiagnostics(program);
 
   const checker = program.getTypeChecker();
-  const entryFile = program.getSourceFile('src/index.ts');
+  const entryFile = program.getSourceFile(config.paths.sourceIndex);
   const entrySymbol = checker.getSymbolAtLocation(entryFile);
   const entryExports = checker.getExportsOfModule(entrySymbol);
 

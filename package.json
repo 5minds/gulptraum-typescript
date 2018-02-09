@@ -37,6 +37,7 @@
   "homepage": "https://github.com/5minds/gulptraum#readme",
   "devDependencies": {
     "@types/node": "^8.0.16",
+    "@types/vinyl": "^2.0.2",
     "eslint": "^3.4.0",
     "eslint-config-5minds": "0.0.4",
     "eslint-plugin-import": "^1.14.0",
@@ -48,11 +49,12 @@
   "dependencies": {
     "del": "^3.0.0",
     "fs-extra": "^4.0.0",
+    "glob": "^7.1.2",
     "gulp-mocha": "^4.3.1",
     "gulp-sourcemaps": "^2.6.0",
     "gulp-tslint": "^8.1.1",
     "gulp-typedoc": "^2.0.2",
-    "gulp-typescript": "^3.2.1",
+    "gulp-typescript": "^4.0.0",
     "through2": "^2.0.3",
     "tslint": "^5.5.0",
     "typedoc": "^0.8.0",
