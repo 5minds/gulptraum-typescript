@@ -68,29 +68,29 @@ function generateSchemasHelper(generator: any, symbols: any, exportedSymbols: an
 
     symbols.forEach((symbol) => {
 
-      const isMatch = exportedSymbols.some((exportedSymbol) => {
-        return symbol == exportedSymbol;
+      const match = exportedSymbols.find((exportedSymbol) => {
+        return symbol == exportedSymbol.identifier;
       });
 
-      if (!isMatch) {
+      if (!match) {
         return;
       }
 
-      const schema = generator.getSchemaForSymbol(symbol);
+      const schema = generator.getSchemaForSymbol(match.identifier);
       const schemaString = JSON.stringify(schema, null, 2);
 
       const base = path.join(file.path, '..');
 
       const currentFile = new File({
         base: base,
-        path: path.join(base, `${symbol}.json`),
+        path: path.join(base, `${match.name}.json`),
         contents: new Buffer(schemaString, 'utf8')
       });
 
       this.push(currentFile);
 
-      if (generatedSchemas.indexOf(symbol) < 0) {
-        generatedSchemas.push(symbol);
+      if (generatedSchemas.indexOf(match.name) < 0) {
+        generatedSchemas.push(match.name);
       }
     });
 
@@ -138,7 +138,10 @@ function getExportedSymbols(compilerOptions: any, config: any): any {
 
     }
 
-    return symbol.name;
+    return {
+      name: symbol.name,
+      identifier: checker.getFullyQualifiedName(symbol),
+    };
   });
 
   return exportedSymbols;

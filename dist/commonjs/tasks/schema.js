@@ -52,23 +52,23 @@ function generateSchemasHelper(generator, symbols, exportedSymbols, heritage) {
     return through.obj(function (file, enc, cb) {
         var _this = this;
         symbols.forEach(function (symbol) {
-            var isMatch = exportedSymbols.some(function (exportedSymbol) {
-                return symbol == exportedSymbol;
+            var match = exportedSymbols.find(function (exportedSymbol) {
+                return symbol == exportedSymbol.identifier;
             });
-            if (!isMatch) {
+            if (!match) {
                 return;
             }
-            var schema = generator.getSchemaForSymbol(symbol);
+            var schema = generator.getSchemaForSymbol(match.identifier);
             var schemaString = JSON.stringify(schema, null, 2);
             var base = path.join(file.path, '..');
             var currentFile = new File({
                 base: base,
-                path: path.join(base, symbol + ".json"),
+                path: path.join(base, match.name + ".json"),
                 contents: new Buffer(schemaString, 'utf8')
             });
             _this.push(currentFile);
-            if (generatedSchemas.indexOf(symbol) < 0) {
-                generatedSchemas.push(symbol);
+            if (generatedSchemas.indexOf(match.name) < 0) {
+                generatedSchemas.push(match.name);
             }
         });
         var indexContents = "'use strict';\n\n";
@@ -101,7 +101,10 @@ function getExportedSymbols(compilerOptions, config) {
                 console.log(symbol);
             }
         }
-        return symbol.name;
+        return {
+            name: symbol.name,
+            identifier: checker.getFullyQualifiedName(symbol)
+        };
     });
     return exportedSymbols;
 }
