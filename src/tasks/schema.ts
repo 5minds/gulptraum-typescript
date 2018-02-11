@@ -28,12 +28,7 @@ export function generate(gulp, config, gulptraum): void {
   gulptraum.task('typescript-schema', {
     help: 'Generates JSON schemas from your TypeScript sources'
   }, (callback) => {
-
     const host = ts.createCompilerHost(currentCompilerOptions);
-    const indexProgram = ts.createProgram([config.paths.sourceIndex], currentCompilerOptions, host);
-    const program = ts.createProgram([config.paths.source], currentCompilerOptions, host);
-
-    ts.getPreEmitDiagnostics(program);
 
     const files = glob.sync(config.paths.source);
     const schemaProgram = tsJsonSchema.getProgramFromFiles(files, currentCompilerOptions);
@@ -46,9 +41,16 @@ export function generate(gulp, config, gulptraum): void {
       process.exit(1);
     }
 
-    const exportedSymbols = getExportedSymbols(currentCompilerOptions, config);
+    const program = ts.createProgram([config.paths.sourceIndex], currentCompilerOptions, host);
 
-    const heritage = JSON.stringify(getExportHeritage(currentCompilerOptions, config), null, 2);
+    const checker = program.getTypeChecker();
+    const entryFile = program.getSourceFile(config.paths.sourceIndex);
+    const entrySymbol = checker.getSymbolAtLocation(entryFile);
+    const entryExports = checker.getExportsOfModule(entrySymbol);
+
+    const exportedSymbols = getExportedSymbols(checker, entryExports);
+
+    const heritage = JSON.stringify(getExportHeritage(checker, entryExports), null, 2);
 
     const symbols = generator.getUserSymbols();
 
@@ -113,17 +115,7 @@ function generateSchemasHelper(generator: any, symbols: any, exportedSymbols: an
   });
 }
 
-function getExportedSymbols(compilerOptions: any, config: any): any {
-
-  const host = ts.createCompilerHost(compilerOptions);
-  const program = ts.createProgram([config.paths.sourceIndex], compilerOptions, host);
-
-  ts.getPreEmitDiagnostics(program);
-
-  const checker = program.getTypeChecker();
-  const entryFile = program.getSourceFile(config.paths.sourceIndex);
-  const entrySymbol = checker.getSymbolAtLocation(entryFile);
-  const entryExports = checker.getExportsOfModule(entrySymbol);
+function getExportedSymbols(checker: ts.TypeChecker, entryExports: Array<ts.Symbol>): any {
 
   const exportedSymbols = entryExports.map((symbol) => {
 
@@ -144,17 +136,8 @@ function getExportedSymbols(compilerOptions: any, config: any): any {
   return exportedSymbols;
 }
 
-function getExportHeritage(compilerOptions: any, config: any): any {
+function getExportHeritage(checker: ts.TypeChecker, entryExports: Array<ts.Symbol>): any {
 
-  const host = ts.createCompilerHost(compilerOptions);
-  const program = ts.createProgram([config.paths.sourceIndex], compilerOptions, host);
-
-  ts.getPreEmitDiagnostics(program);
-
-  const checker = program.getTypeChecker();
-  const entryFile = program.getSourceFile(config.paths.sourceIndex);
-  const entrySymbol = checker.getSymbolAtLocation(entryFile);
-  const entryExports = checker.getExportsOfModule(entrySymbol);
 
   const heritage = {};
 
