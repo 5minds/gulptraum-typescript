@@ -27,15 +27,14 @@ function generate(gulp, config, gulptraum) {
     }, function (callback) {
         var host = ts.createCompilerHost(currentCompilerOptions);
         var files = glob.sync(config.paths.source);
-        var schemaProgram = tsJsonSchema.getProgramFromFiles(files, currentCompilerOptions);
-        var generator = tsJsonSchema.buildGenerator(schemaProgram, {
+        var program = ts.createProgram([config.paths.sourceIndex].concat(files), currentCompilerOptions, host);
+        var generator = tsJsonSchema.buildGenerator(program, {
             required: true,
         });
         if (!generator) {
             console.log('errors during TypeScript compilation - exiting...');
             process.exit(1);
         }
-        var program = ts.createProgram([config.paths.sourceIndex], currentCompilerOptions, host);
         var checker = program.getTypeChecker();
         var entryFile = program.getSourceFile(config.paths.sourceIndex);
         var entrySymbol = checker.getSymbolAtLocation(entryFile);

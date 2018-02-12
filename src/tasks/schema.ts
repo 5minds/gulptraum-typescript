@@ -31,8 +31,9 @@ export function generate(gulp, config, gulptraum): void {
     const host = ts.createCompilerHost(currentCompilerOptions);
 
     const files = glob.sync(config.paths.source);
-    const schemaProgram = tsJsonSchema.getProgramFromFiles(files, currentCompilerOptions);
-    const generator = tsJsonSchema.buildGenerator(schemaProgram, {
+    const program = ts.createProgram([config.paths.sourceIndex, ...files], currentCompilerOptions, host);
+
+    const generator = tsJsonSchema.buildGenerator(program, {
       required: true,
     });
 
@@ -41,7 +42,6 @@ export function generate(gulp, config, gulptraum): void {
       process.exit(1);
     }
 
-    const program = ts.createProgram([config.paths.sourceIndex], currentCompilerOptions, host);
 
     const checker = program.getTypeChecker();
     const entryFile = program.getSourceFile(config.paths.sourceIndex);

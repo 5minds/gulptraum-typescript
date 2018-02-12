@@ -50,7 +50,6 @@
     "del": "^3.0.0",
     "fs-extra": "^4.0.0",
     "glob": "^7.1.2",
-    "gulp": "^3.9.1",
     "gulp-mocha": "^4.3.1",
     "gulp-sourcemaps": "^2.6.0",
     "gulp-tslint": "^8.1.1",
