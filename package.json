@@ -1,6 +1,6 @@
 {
   "name": "gulptraum-typescript",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "TypeScript plugin for gulptraum.",
   "main": "dist/commonjs/index.js",
   "typings": "dist/index.d.ts",
