@@ -9,6 +9,7 @@ function getTypeScriptConfig(buildStepConfig) {
             emitDecoratorMetadata: false,
             moduleResolution: 'node',
             stripInternal: true,
+            isolatedModules: false,
             preserveConstEnums: true,
             listFiles: true,
             declaration: true,

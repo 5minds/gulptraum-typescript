@@ -24,6 +24,7 @@ export const getDefaultConfig: IConfigurationHook
     useTypeScriptForDTS: true,
     importsToAdd: [],
     compileToModules: ['es2015', 'commonjs', 'amd', 'system'],
+    transpileOnly: false,
     priority: 0
   };
 

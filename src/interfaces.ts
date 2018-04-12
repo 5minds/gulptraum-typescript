@@ -11,4 +11,5 @@ export interface ITypeScriptPluginConfiguration extends IPluginConfiguration<ITy
   useTypeScriptForDTS?: boolean;
   importsToAdd?: Array<string>;
   compileToModules?: Array<string>;
+  transpileOnly: boolean;
 }

@@ -17,6 +17,7 @@ exports.getDefaultConfig = function (buildSystemConfig) {
         useTypeScriptForDTS: true,
         importsToAdd: [],
         compileToModules: ['es2015', 'commonjs', 'amd', 'system'],
+        transpileOnly: false,
         priority: 0
     };
     var baseConfig = Object.assign({}, buildSystemConfig);
