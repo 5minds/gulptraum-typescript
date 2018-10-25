@@ -1,4 +1,4 @@
-import { IPluginConfiguration, IBuildSystemPathsConfiguration } from 'new_gulptraum';
+import { IPluginConfiguration, IBuildSystemPathsConfiguration } from 'gulptraum';
 export interface ITypeScriptPluginPathsConfiguration extends IBuildSystemPathsConfiguration {
     typings?: string;
     tslintConfig?: string;

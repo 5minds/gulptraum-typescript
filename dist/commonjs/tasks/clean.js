@@ -4,12 +4,11 @@ var del = require("del");
 var vinylPaths = require("vinyl-paths");
 var path = require("path");
 function generate(gulp, config, gulptraum) {
-    var outputFolderPath = path.resolve(config.paths.root, config.paths.output);
-    var schemaOutputFolderPath = path.resolve(config.paths.root, config.paths.schemaOutput);
+    var schemaOutputFolderPath = path.resolve(config.paths.root, config.paths.output);
     gulptraum.task('build-typescript-clean', {
         help: 'Cleans the files compiled from your TypeScript source code'
     }, function () {
-        return gulp.src("" + outputFolderPath)
+        return gulp.src("" + schemaOutputFolderPath)
             .pipe(vinylPaths(del));
     });
     gulptraum.task('clean-typescript', {
