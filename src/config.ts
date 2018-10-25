@@ -4,14 +4,13 @@ import {IConfigurationHook, IBuildSystemConfiguration } from 'gulptraum';
 import * as fs from 'fs';
 import * as path from 'path';
 
-export const getDefaultConfig: IConfigurationHook
-= function (buildSystemConfig: IBuildSystemConfiguration): ITypeScriptPluginConfiguration {
+export const getDefaultConfig: IConfigurationHook = function (buildSystemConfig: IBuildSystemConfiguration): ITypeScriptPluginConfiguration {
 
   const tslintConfigPath = path.resolve(buildSystemConfig.paths.root, 'tslint.json');
   const tslintConfigExists = fs.existsSync(tslintConfigPath);
 
   let paths: ITypeScriptPluginPathsConfiguration = Object.assign({}, buildSystemConfig.paths);
-  
+
   paths.source = `${buildSystemConfig.paths.source}**/*.ts*`;
   paths.sourceIndex = `${buildSystemConfig.paths.source}index.ts`;
   paths.typings = `${path.resolve(buildSystemConfig.paths.root, 'typings/')}/**/*.d.ts`;
