@@ -4,7 +4,6 @@ import {initializeTypeScriptOptions} from './../setup/typescript-options';
 
 export function generate(gulp, config, gulptraum): void {
 
-  const jsName = `${config.packageName}.ts`;
   const getTypescriptOptions: any = initializeTypeScriptOptions(config);
 
   function srcForTypeScript() {

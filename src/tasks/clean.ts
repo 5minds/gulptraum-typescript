@@ -4,14 +4,13 @@ import * as path from 'path';
 
 export function generate(gulp, config, gulptraum): void {
 
-  const outputFolderPath = path.resolve(config.paths.root, config.paths.output);
-  const schemaOutputFolderPath = path.resolve(config.paths.root, config.paths.schemaOutput);
-  
+  const schemaOutputFolderPath = path.resolve(config.paths.root, config.paths.output);
+
   gulptraum.task('build-typescript-clean', {
     help: 'Cleans the files compiled from your TypeScript source code'
   }, () => {
     // TODO: make use of excludes provided in the config
-    return gulp.src(`${outputFolderPath}`)
+    return gulp.src(`${schemaOutputFolderPath}`)
       .pipe(vinylPaths(del));
   });
 
