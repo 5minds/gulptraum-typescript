@@ -27,8 +27,6 @@ function generate(gulp, config, gulptraum) {
                 .pipe(gulp.dest(config.paths.output + moduleType));
         });
     });
-    console.log('REGISTER BUILD TASK');
-    console.log(gulptraum);
     gulptraum.task('build-typescript-dts', {
         help: 'Generates the type definitions (.d.ts) file from your TypeScript source code',
     }, function () {
