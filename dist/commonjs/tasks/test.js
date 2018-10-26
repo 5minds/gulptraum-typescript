@@ -17,8 +17,18 @@ function generate(gulp, config, gulptraum) {
     gulptraum.task('test-typescript-clean', {
         help: 'Cleans all test files built by the TypeScript plugin'
     }, function () {
-        return gulp.src("" + testsOutputFolderPath)
-            .pipe(vinylPaths(del));
+        // NOTE: Glob.js now throws an error by default, if a directly was not found.
+        // We must pass a config to "del", telling glob.js not to do that.
+        const deleteFiles = (patterns) => {
+          return del(patterns, {
+            allowEmpty: true,
+            nonull: false,
+          })
+        };
+
+        return gulp
+          .src(`${testsFolderPath}`)
+          .pipe(vinylPaths(deleteFiles));
     });
     if (!fs.existsSync(testsFolderPath)) {
         return;

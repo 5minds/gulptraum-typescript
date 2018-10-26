@@ -19,8 +19,17 @@ export function generate(gulp, config, gulptraum): void {
   gulptraum.task('test-typescript-clean', {
     help: 'Cleans all test files built by the TypeScript plugin'
   }, () => {
-    return gulp.src(`${testsOutputFolderPath}`)
-      .pipe(vinylPaths(del));
+    // NOTE: Glob.js now throws an error by default, if a directly was not found.
+    // We must pass a config to "del", telling glob.js not to do that.
+    const deleteFiles: any = (patterns) => {
+      return del(patterns, {
+        nonull: false,
+      })
+    };
+
+    return gulp
+      .src(`${testsFolderPath}`)
+      .pipe(vinylPaths(deleteFiles));
   });
 
   if (!fs.existsSync(testsFolderPath)) {
@@ -37,12 +46,12 @@ export function generate(gulp, config, gulptraum): void {
     const currentPath = path.resolve(config.paths.root);
     let symlinkFolderPath = path.resolve(`${config.paths.root}/node_modules`);
     const symlinkTargetPath = path.resolve(`${symlinkFolderPath}/${config.fullPackageName}`);
-    
+
     if (config.fullPackageName[0] === '@') {
       const packageScopeFolder = config.fullPackageName.split('/')[0];
       symlinkFolderPath = path.resolve(`${symlinkFolderPath}/${packageScopeFolder}`);
     }
-    
+
     const symlinkExists = fs.existsSync(symlinkTargetPath);
 
     if (!symlinkExists) {
@@ -99,7 +108,7 @@ export function generate(gulp, config, gulptraum): void {
       // TODO: make sure clean is executed if errors occur during runtime
       'test-typescript-clean',
     ];
-    
+
     return gulptraum.gulpAdapter.runTasksSequential(tasks, callback);
   });
 

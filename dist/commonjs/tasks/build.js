@@ -1,5 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var del = require("del");
+var vinylPaths = require("vinyl-paths");
+var path = require("path");
 var ts = require("gulp-typescript");
 var sourcemaps = require("gulp-sourcemaps");
 var typescript_options_1 = require("./../setup/typescript-options");
@@ -10,6 +13,22 @@ function generate(gulp, config, gulptraum) {
         return gulp
             .src(allSourceFiles);
     }
+    var buildOutputFolderPath = path.resolve(config.paths.root, config.paths.output);
+    gulptraum.task('build-typescript-clean', {
+        help: 'Cleans the files compiled from your TypeScript source code'
+    }, function () {
+      // NOTE: Glob.js now throws an error by default, if a directly was not found.
+      // We must pass a config to "del", telling glob.js not to do that.
+      const deleteFiles = (patterns) => {
+        return del(patterns, {
+          allowEmpty: true,
+          nonull: false,
+        })
+      };
+      return gulp
+        .src(`${buildOutputFolderPath}`)
+        .pipe(vinylPaths(deleteFiles));
+    });
     config.compileToModules.forEach(function (moduleType) {
         gulptraum.task("build-typescript-" + moduleType, {
             help: "Builds the TypeScript source code into a " + moduleType + " module",

@@ -1,5 +1,9 @@
-import * as ts from 'gulp-typescript';
+import * as del from 'del';
+import * as path from 'path';
 import * as sourcemaps from 'gulp-sourcemaps';
+import * as ts from 'gulp-typescript';
+import * as vinylPaths from 'vinyl-paths';
+
 import {initializeTypeScriptOptions} from './../setup/typescript-options';
 
 export function generate(gulp, config, gulptraum): void {
@@ -11,6 +15,24 @@ export function generate(gulp, config, gulptraum): void {
     return gulp
       .src(allSourceFiles);
   }
+
+  const buildOutputFolderPath = path.resolve(config.paths.root, config.paths.output);
+
+  gulptraum.task('build-typescript-clean', {
+    help: 'Cleans the files compiled from your TypeScript source code'
+  }, () => {
+    // NOTE: Glob.js now throws an error by default, if a directly was not found.
+    // We must pass a config to "del", telling glob.js not to do that.
+    const deleteFiles: any = (patterns) => {
+      return del(patterns, {
+        nonull: false,
+      })
+    };
+
+    return gulp
+      .src(`${buildOutputFolderPath}`)
+      .pipe(vinylPaths(deleteFiles));
+  });
 
   config.compileToModules.forEach((moduleType) => {
 
