@@ -6,7 +6,7 @@ var path = require("path");
 function generate(gulp, config, gulptraum) {
     var buildOutputFolderPath = path.resolve(config.paths.root, config.paths.output);
     var docsOutputFolderPath = path.resolve(config.paths.root, config.paths.doc);
-    var testsFolderPath = path.resolve(config.paths.root, config.paths.tests);
+    var testsFolderPath = path.resolve(config.paths.root, config.paths.testOutput);
     gulptraum.task('build-typescript-clean', {
         help: 'Cleans the files compiled from your TypeScript source code'
     }, function () {

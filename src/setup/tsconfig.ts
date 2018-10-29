@@ -2,8 +2,8 @@ export function getTypeScriptConfig(buildStepConfig: any): any {
 
   const config = {
     compilerOptions: {
-      target: 'es2015',
-      module: 'es2015',
+      target: 'es2017',
+      module: 'es2017',
       experimentalDecorators: true,
       emitDecoratorMetadata: false,
       moduleResolution: 'node',
@@ -13,7 +13,7 @@ export function getTypeScriptConfig(buildStepConfig: any): any {
       listFiles: true,
       declaration: true,
       removeComments: true,
-      lib: ['es2015', 'dom'],
+      lib: ['es2017', 'dom'],
     },
     exclude: [
       'node_modules',

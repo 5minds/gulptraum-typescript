@@ -22,7 +22,7 @@ export const getDefaultConfig: IConfigurationHook = function (buildSystemConfig:
     paths: paths,
     useTypeScriptForDTS: true,
     importsToAdd: [],
-    compileToModules: ['es2015', 'commonjs', 'amd', 'system'],
+    compileToModules: ['es2017', 'commonjs', 'amd', 'system'],
     transpileOnly: false,
     priority: 0
   };

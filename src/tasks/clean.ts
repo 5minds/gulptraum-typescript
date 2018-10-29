@@ -7,7 +7,7 @@ export function generate(gulp: Gulp.Gulp, config, gulptraum): void {
 
   const buildOutputFolderPath = path.resolve(config.paths.root, config.paths.output);
   const docsOutputFolderPath = path.resolve(config.paths.root, config.paths.doc);
-  const testsFolderPath = path.resolve(config.paths.root, config.paths.tests);
+  const testsFolderPath = path.resolve(config.paths.root, config.paths.testOutput);
 
   gulptraum.task('build-typescript-clean', {
     help: 'Cleans the files compiled from your TypeScript source code'

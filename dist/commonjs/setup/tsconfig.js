@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function getTypeScriptConfig(buildStepConfig) {
     var config = {
         compilerOptions: {
-            target: 'es2015',
-            module: 'es2015',
+            target: 'es2017',
+            module: 'es2017',
             experimentalDecorators: true,
             emitDecoratorMetadata: false,
             moduleResolution: 'node',
@@ -14,7 +14,7 @@ function getTypeScriptConfig(buildStepConfig) {
             listFiles: true,
             declaration: true,
             removeComments: true,
-            lib: ['es2015', 'dom'],
+            lib: ['es2017', 'dom'],
         },
         exclude: [
             'node_modules',
