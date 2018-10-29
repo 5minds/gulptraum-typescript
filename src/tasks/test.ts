@@ -1,6 +1,4 @@
 import * as fs from 'fs';
-import * as del from 'del';
-import * as vinylPaths from 'vinyl-paths';
 import * as path from 'path';
 import * as ts from 'gulp-typescript';
 import * as mocha from 'gulp-mocha';
@@ -15,22 +13,6 @@ export function generate(gulp, config, gulptraum): void {
   const sourceOutputFolderPath = path.resolve(config.paths.root, config.paths.output);
   const testsOutputFolderPath = path.resolve(config.paths.root, config.paths.testOutput);
   const typingsGlobPath = path.resolve(config.paths.root, config.paths.typings);
-
-  gulptraum.task('test-typescript-clean', {
-    help: 'Cleans all test files built by the TypeScript plugin'
-  }, () => {
-    // NOTE: Glob.js now throws an error by default, if a directly was not found.
-    // We must pass a config to "del", telling glob.js not to do that.
-    const deleteFiles: any = (patterns) => {
-      return del(patterns, {
-        nonull: false,
-      })
-    };
-
-    return gulp
-      .src(`${testsFolderPath}`)
-      .pipe(vinylPaths(deleteFiles));
-  });
 
   if (!fs.existsSync(testsFolderPath)) {
     return;

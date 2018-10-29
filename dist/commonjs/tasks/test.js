@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs");
-var del = require("del");
-var vinylPaths = require("vinyl-paths");
 var path = require("path");
 var ts = require("gulp-typescript");
 var mocha = require("gulp-mocha");
@@ -14,22 +12,6 @@ function generate(gulp, config, gulptraum) {
     var sourceOutputFolderPath = path.resolve(config.paths.root, config.paths.output);
     var testsOutputFolderPath = path.resolve(config.paths.root, config.paths.testOutput);
     var typingsGlobPath = path.resolve(config.paths.root, config.paths.typings);
-    gulptraum.task('test-typescript-clean', {
-        help: 'Cleans all test files built by the TypeScript plugin'
-    }, function () {
-        // NOTE: Glob.js now throws an error by default, if a directly was not found.
-        // We must pass a config to "del", telling glob.js not to do that.
-        const deleteFiles = (patterns) => {
-          return del(patterns, {
-            allowEmpty: true,
-            nonull: false,
-          })
-        };
-
-        return gulp
-          .src(`${testsFolderPath}`)
-          .pipe(vinylPaths(deleteFiles));
-    });
     if (!fs.existsSync(testsFolderPath)) {
         return;
     }
