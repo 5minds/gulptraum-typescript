@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var ts = require("gulp-typescript");
 var sourcemaps = require("gulp-sourcemaps");
+var ts = require("gulp-typescript");
 var typescript_options_1 = require("./../setup/typescript-options");
 function generate(gulp, config, gulptraum) {
     var getTypescriptOptions = typescript_options_1.initializeTypeScriptOptions(config);

@@ -1,1 +1,2 @@
-export declare function generate(gulp: any, config: any, gulptraum: any): void;
+import * as Gulp from 'gulp';
+export declare function generate(gulp: Gulp.Gulp, config: any, gulptraum: any): void;
