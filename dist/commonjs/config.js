@@ -1,20 +1,27 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs = require("fs");
-const path = require("path");
+var fs = require("fs");
+var path = require("path");
 exports.getDefaultConfig = function (buildSystemConfig) {
-    const tslintConfigPath = path.resolve(buildSystemConfig.paths.root, 'tslint.json');
-    const tslintConfigExists = fs.existsSync(tslintConfigPath);
-    let paths = Object.assign({}, buildSystemConfig.paths);
-    paths.source = `${path.resolve(buildSystemConfig.paths.root, buildSystemConfig.paths.source)}/**/*.ts`;
-    paths.typings = `${path.resolve(buildSystemConfig.paths.root, 'typings/')}/**/*.d.ts`;
+    var tslintConfigPath = path.resolve(buildSystemConfig.paths.root, 'tslint.json');
+    var tslintConfigExists = fs.existsSync(tslintConfigPath);
+    var paths = Object.assign({}, buildSystemConfig.paths);
+    paths.source = buildSystemConfig.paths.source + "**/*.ts*";
+    paths.sourceIndex = buildSystemConfig.paths.source + "index.ts";
+    paths.typings = path.resolve(buildSystemConfig.paths.root, 'typings/') + "/**/*.d.ts";
     paths.tslintConfig = tslintConfigExists ? tslintConfigPath : undefined;
-    const config = Object.assign({}, buildSystemConfig);
-    config.pluginName = 'typescript';
-    config.paths = paths;
-    config.useTypeScriptForDTS = true;
-    config.importsToAdd = [];
-    config.compileToModules = buildSystemConfig.compileToModules || ['es2015', 'commonjs', 'amd', 'system'];
+    paths.schemaOutput = 'schemas';
+    var pluginConfig = {
+        pluginName: 'typescript',
+        paths: paths,
+        useTypeScriptForDTS: true,
+        importsToAdd: [],
+        compileToModules: ['es2017', 'commonjs', 'amd', 'system'],
+        transpileOnly: false,
+        priority: 0
+    };
+    var baseConfig = Object.assign({}, buildSystemConfig);
+    var config = Object.assign(baseConfig, pluginConfig);
     return config;
 };
 

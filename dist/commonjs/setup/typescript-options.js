@@ -1,13 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const tsconfig = require("./tsconfig");
-const typescript = require("typescript");
+var tsconfig = require("./tsconfig");
+var typescript = require("typescript");
+var yargs = require("yargs");
 function initializeTypeScriptOptions(buildStepConfig) {
-    const resolvedTsConfig = tsconfig.getTypeScriptConfig(buildStepConfig);
-    return (override) => {
+    var resolvedTsConfig = tsconfig.getTypeScriptConfig(buildStepConfig);
+    return function (override) {
         return Object.assign(resolvedTsConfig.compilerOptions, {
-            target: override && override.target || 'es5',
+            target: override && override.target || 'es2017',
             typescript: typescript,
+            isolatedModules: yargs.env('GULPTRAUM').argv.transpileOnly ? true : false,
         }, override || {});
     };
 }

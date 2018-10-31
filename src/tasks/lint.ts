@@ -29,5 +29,3 @@ export function generate(gulp, config, gulptraum): void {
   });
 
 }
-
-module.exports.generate = generate;
