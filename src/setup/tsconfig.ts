@@ -13,7 +13,7 @@ export function getTypeScriptConfig(buildStepConfig: any): any {
       listFiles: true,
       declaration: true,
       removeComments: true,
-      lib: ['es2017', 'dom'],
+      lib: ['esnext', 'dom'],
     },
     exclude: [
       'node_modules',
