@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs");
-var del = require("del");
-var vinylPaths = require("vinyl-paths");
 var path = require("path");
 var ts = require("gulp-typescript");
 var mocha = require("gulp-mocha");
@@ -14,12 +12,6 @@ function generate(gulp, config, gulptraum) {
     var sourceOutputFolderPath = path.resolve(config.paths.root, config.paths.output);
     var testsOutputFolderPath = path.resolve(config.paths.root, config.paths.testOutput);
     var typingsGlobPath = path.resolve(config.paths.root, config.paths.typings);
-    gulptraum.task('test-typescript-clean', {
-        help: 'Cleans all test files built by the TypeScript plugin'
-    }, function () {
-        return gulp.src("" + testsOutputFolderPath)
-            .pipe(vinylPaths(del));
-    });
     if (!fs.existsSync(testsFolderPath)) {
         return;
     }

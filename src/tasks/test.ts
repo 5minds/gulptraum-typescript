@@ -1,6 +1,4 @@
 import * as fs from 'fs';
-import * as del from 'del';
-import * as vinylPaths from 'vinyl-paths';
 import * as path from 'path';
 import * as ts from 'gulp-typescript';
 import * as mocha from 'gulp-mocha';
@@ -16,13 +14,6 @@ export function generate(gulp, config, gulptraum): void {
   const testsOutputFolderPath = path.resolve(config.paths.root, config.paths.testOutput);
   const typingsGlobPath = path.resolve(config.paths.root, config.paths.typings);
 
-  gulptraum.task('test-typescript-clean', {
-    help: 'Cleans all test files built by the TypeScript plugin'
-  }, () => {
-    return gulp.src(`${testsOutputFolderPath}`)
-      .pipe(vinylPaths(del));
-  });
-
   if (!fs.existsSync(testsFolderPath)) {
     return;
   }
@@ -37,12 +28,12 @@ export function generate(gulp, config, gulptraum): void {
     const currentPath = path.resolve(config.paths.root);
     let symlinkFolderPath = path.resolve(`${config.paths.root}/node_modules`);
     const symlinkTargetPath = path.resolve(`${symlinkFolderPath}/${config.fullPackageName}`);
-    
+
     if (config.fullPackageName[0] === '@') {
       const packageScopeFolder = config.fullPackageName.split('/')[0];
       symlinkFolderPath = path.resolve(`${symlinkFolderPath}/${packageScopeFolder}`);
     }
-    
+
     const symlinkExists = fs.existsSync(symlinkTargetPath);
 
     if (!symlinkExists) {
@@ -99,7 +90,7 @@ export function generate(gulp, config, gulptraum): void {
       // TODO: make sure clean is executed if errors occur during runtime
       'test-typescript-clean',
     ];
-    
+
     return gulptraum.gulpAdapter.runTasksSequential(tasks, callback);
   });
 

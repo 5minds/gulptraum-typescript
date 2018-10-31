@@ -1,8 +1,8 @@
 'use strict';
 
+const gulp = require('gulp');
 const gulptraum = require('gulptraum');
 const gulptraumTypescriptPlugin = require('gulptraum-typescript');
-const tsconfig = require('tsconfig');
 
 const buildSystemConfig = {
 };
@@ -14,8 +14,6 @@ buildSystem.config = buildSystemConfig;
 const typeScriptConfig = {
   compileToModules: ['commonjs'],
 };
-
-const gulp = require('gulp');
 
 buildSystem
   .registerPlugin('typescript', gulptraumTypescriptPlugin, typeScriptConfig)

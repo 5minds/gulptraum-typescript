@@ -1,5 +1,4 @@
 import * as path from 'path';
-import * as fs from 'fs';
 import * as tsJsonSchema from 'typescript-json-schema';
 import * as through from 'through2';
 import * as File from 'vinyl';
@@ -123,7 +122,7 @@ function getExportedSymbols(checker: ts.TypeChecker, entryExports: Array<ts.Symb
 
       try {
         symbol = checker.getAliasedSymbol(symbol);
-        
+
       } catch (error) {
         console.log(symbol);
       }
@@ -145,19 +144,19 @@ function getExportHeritage(checker: ts.TypeChecker, entryExports: Array<ts.Symbo
   const heritage = {};
 
   for (let symbol of entryExports) {
-    
+
     if (symbol.getFlags() & ts.SymbolFlags.Alias) {
       symbol = checker.getAliasedSymbol(symbol);
     }
 
     const name = symbol.name;
-    
+
     const interfaces = [];
 
     if (!symbol.declarations || !Array.isArray(symbol.declarations)) {
       continue;
     }
-  
+
     for (const symbolDeclaration of symbol.declarations) {
 
       const heritageClauses = (<ts.ClassLikeDeclaration>symbolDeclaration).heritageClauses;
@@ -165,19 +164,19 @@ function getExportHeritage(checker: ts.TypeChecker, entryExports: Array<ts.Symbo
       if (!heritageClauses || !Array.isArray(heritageClauses)) {
         continue;
       }
-    
+
       for (const heritageClause of (<ts.ClassLikeDeclaration>symbolDeclaration).heritageClauses) {
-        
+
         if (!heritageClause || !Array.isArray(heritageClause.types)) {
           continue;
         }
-        
+
         for (const type of heritageClause.types) {
-          
+
           if (!type) {
             continue;
           }
-  
+
           const interfaceName = type.getText();
 
           interfaces.push(interfaceName);

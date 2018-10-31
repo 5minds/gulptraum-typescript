@@ -1,10 +1,10 @@
-import * as ts from 'gulp-typescript';
 import * as sourcemaps from 'gulp-sourcemaps';
+import * as ts from 'gulp-typescript';
+
 import {initializeTypeScriptOptions} from './../setup/typescript-options';
 
 export function generate(gulp, config, gulptraum): void {
 
-  const jsName = `${config.packageName}.ts`;
   const getTypescriptOptions: any = initializeTypeScriptOptions(config);
 
   function srcForTypeScript() {
