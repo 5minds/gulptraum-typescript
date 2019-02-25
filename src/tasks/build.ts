@@ -25,7 +25,11 @@ export function generate(gulp, config, gulptraum): void {
       const tsProject = ts.createProject(options);
       const tsResult = srcForTypeScript()
         .pipe(sourcemaps.init())
-        .pipe(tsProject(ts.reporter.fullReporter(true)));
+        .pipe(tsProject(ts.reporter.fullReporter(true)))
+        .on('error', function(error) {
+          throw new Error(error.message);
+        });
+
 
       return tsResult.js
         .pipe(sourcemaps.write('.', {includeContent: false, sourceRoot: '../../src'}))
